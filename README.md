@@ -30,7 +30,7 @@ python -m nltk.downloader punkt_tab
 
 - [data](data/): provides relevant data files. 
     - [scholar_cs](scholar_cs): includes **ScholarQA-CS** (Computer Science) data files
-        - ``output_snippets.jsonl`` : Contains the questions with system responses for eval (and some other metadata used to generate the test cases but not required for subsequent runs). Should not require further modification.
+        - `output_snippets.jsonl` : Contains the questions with system responses for eval (and some other metadata used to generate the test cases but not required for subsequent runs). Should not require further modification.
         - `test_configs_snippets.json` : A collection of test cases in json format with associated rubrics for each question. Each question has its own test case and rubrics. Should not require further modification.
         - `qa_metadata_all.jsonl` : Metadata file that was used to bootstrap this utility. Should not require further modification.
         - `src_answers`: Directory containing sample system responses from 4 systems.
@@ -38,6 +38,10 @@ python -m nltk.downloader punkt_tab
     - [scholar_multi](scholar_multi): includes **ScholarQA-Multi** (Multi-domain; CS, Bio and Physics) data files
     - [scholar_bio](scholar_bio): includes **ScholarQA-Bio** (Biomedicine) data files
     - [scholar_neuro](scholar_neuro): includes **ScholarQA-Neuro** (Neuroscience) data files
+    - [single_paper_tasks](single_paper_tasks): includes **SciFact**, **PubmedQA** and **QASA**. 
+        - `scifact_test.jsonl`: a jsonlines file includes the SciFact task data. Each item consists of `input` (original claim), `answer` (answer label, `true` or `false`), and `gold_ctx` (a list of dictionary where each item consists of `title` and `text`). `gold_ctx` will not be used during evaluation except for oracle gold context evaluation. 
+        - `pubmed_test.jsonl`: a jsonlines file includes the PubMed task data. Each item consists of `input` (original question), `answer` (answer label, `yes` or `no`), and `gold_ctx` (a list of dictionary where each item consists of `title` and `text`). `gold_ctx` will not be used during evaluation except for oracle gold context evaluation. 
+        - `qasa_test.jsonl`: a jsonlines file includes the QASA task data. Each item consists of `input` (question), `answer` (long-form answer), `ctxs` (a list of dictionary items for the full paper data) and `gold_ctxs` (a list of dictionary items where each item consists of `title` and `text` for gold contexts). `gold_ctxs` will not be used during evaluation except for oracle gold context evaluation. 
 - [scripts](scripts/): provides evaluation scripts for each evaluation aspects
     - [rubric_eval.py](scripts/rubric_eval.py): a script to run rubric based evaluations for **ScholarQA-CS**. 
     - [citation_correctness_eval.py](scripts/citation_correctness_eval.py): a script to run citations as well as string-matching-based correctness evaluations for single-paper tasks. 
