@@ -321,8 +321,7 @@ def _run_nli_autoais(passage, claim):
     return inference
 
 
-def compute_autoais(data,
-                    at_most_citations=None):
+def compute_autoais(data, at_most_citations=None, model_cache=None):
     """
     Compute AutoAIS score.
 
@@ -336,8 +335,14 @@ def compute_autoais(data,
 
     if claim_autoais_model is None:
         logger.info("Loading Claims AutoAIS model...")
-        claim_autoais_model = AutoModelForSeq2SeqLM.from_pretrained(OSU_AUTOAIS_MODEL, torch_dtype=torch.bfloat16, max_memory=get_max_memory(), device_map="auto")
-        claim_autoais_tokenizer = AutoTokenizer.from_pretrained(OSU_AUTOAIS_MODEL, use_fast=False)
+        claim_autoais_model = AutoModelForSeq2SeqLM.from_pretrained(
+            OSU_AUTOAIS_MODEL,
+            torch_dtype=torch.bfloat16,
+            max_memory=get_max_memory(),
+            device_map="auto",
+            cache_dir=model_cache,
+        )
+        claim_autoais_tokenizer = AutoTokenizer.from_pretrained(OSU_AUTOAIS_MODEL, use_fast=False, cache_dir=model_cache)
         
     logger.info(f"Running AutoAIS...")
 
@@ -476,8 +481,7 @@ def compute_autoais(data,
     }
 
 
-def compute_autoais_short_form(data,
-                    at_most_citations=None):
+def compute_autoais_short_form(data, at_most_citations=None, model_cache=None):
     """
     Compute AutoAIS score.
 
@@ -496,8 +500,14 @@ def compute_autoais_short_form(data,
 
     if claim_autoais_model is None:
         logger.info("Loading Claims AutoAIS model...")
-        claim_autoais_model = AutoModelForSeq2SeqLM.from_pretrained(OSU_AUTOAIS_MODEL, torch_dtype=torch.bfloat16, max_memory=get_max_memory(), device_map="auto")
-        claim_autoais_tokenizer = AutoTokenizer.from_pretrained(OSU_AUTOAIS_MODEL, use_fast=False)
+        claim_autoais_model = AutoModelForSeq2SeqLM.from_pretrained(
+            OSU_AUTOAIS_MODEL,
+            torch_dtype=torch.bfloat16,
+            max_memory=get_max_memory(),
+            device_map="auto",
+            cache_dir=model_cache,
+        )
+        claim_autoais_tokenizer = AutoTokenizer.from_pretrained(OSU_AUTOAIS_MODEL, use_fast=False, cache_dir=model_cache)
         
     logger.info(f"Running AutoAIS...")
 
@@ -670,6 +680,8 @@ def main():
     
     parser.add_argument("--citations_short", action="store_true", help="Evaluation with citation")
 
+    parser.add_argument("--model_cache", type=str, default=".cache")
+
     args = parser.parse_args()
     
     if args.source_data is not None:
@@ -739,7 +751,7 @@ def main():
             result.update(compute_match(normalized_data))
             
         if args.citations:
-            ais_results = compute_autoais(data,  at_most_citations=args.at_most_citations)
+            ais_results = compute_autoais(data,  at_most_citations=args.at_most_citations, args.model_cache)
             result["citation_rec"] = ais_results["citation_rec"]
             result["citation_prec"] = ais_results["citation_prec"]
             result["citation_f1"] = 2 * (ais_results["citation_rec"] * ais_results["citation_prec"]) / (ais_results["citation_rec"] + ais_results["citation_prec"]) if (ais_results["citation_rec"] + ais_results["citation_prec"]) > 0 else 0
