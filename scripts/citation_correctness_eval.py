@@ -751,7 +751,7 @@ def main():
             result.update(compute_match(normalized_data))
             
         if args.citations:
-            ais_results = compute_autoais(data,  at_most_citations=args.at_most_citations, args.model_cache)
+            ais_results = compute_autoais(data,  args.at_most_citations, args.model_cache)
             result["citation_rec"] = ais_results["citation_rec"]
             result["citation_prec"] = ais_results["citation_prec"]
             result["citation_f1"] = 2 * (ais_results["citation_rec"] * ais_results["citation_prec"]) / (ais_results["citation_rec"] + ais_results["citation_prec"]) if (ais_results["citation_rec"] + ais_results["citation_prec"]) > 0 else 0
