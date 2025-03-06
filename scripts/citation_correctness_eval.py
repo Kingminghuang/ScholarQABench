@@ -391,7 +391,7 @@ def compute_autoais(data,
             # Find references
             # ref = [int(r[1:])-1 for r in re.findall(r"\[\d+", sent)] # In text citation id starts from 1
             ref = [int(r[1:]) for r in re.findall(r"\[\d+", sent)]
-            logger.info(f"For `{sent}`, find citations {ref}")
+            # logger.info(f"For `{sent}`, find citations {ref}")
             if len(ref) == 0 and previous_citations is not None:
                 ref = previous_citations
             
@@ -541,7 +541,7 @@ def compute_autoais_short_form(data,
             # Find references
             # ref = [int(r[1:])-1 for r in re.findall(r"\[\d+", sent)] # In text citation id starts from 1
             ref = [int(r[1:]) for r in re.findall(r"\[\d+", sent)]
-            logger.info(f"For `{sent}`, find citations {ref}")
+            # logger.info(f"For `{sent}`, find citations {ref}")
             
             if len(ref) == 0:
                 # No citations
@@ -627,7 +627,7 @@ def compute_citation_coverage(data):
         o = item['output']
         preds = list(set(extract_citations(item["output"])))
         if "id_mapping" in item:
-            print(item["id_mapping"])
+            # print(item["id_mapping"])
             preds = [item["id_mapping"][p.split("[")[1].split("]")[0]] for p in preds if p.split("[")[1].split("]")[0] in item["id_mapping"]]
         num_preds.append(len(preds))
         if "gold_ctxs" not in item:
@@ -742,6 +742,7 @@ def main():
             ais_results = compute_autoais(data,  at_most_citations=args.at_most_citations)
             result["citation_rec"] = ais_results["citation_rec"]
             result["citation_prec"] = ais_results["citation_prec"]
+            result["citation_f1"] = 2 * (ais_results["citation_rec"] * ais_results["citation_prec"]) / (ais_results["citation_rec"] + ais_results["citation_prec"]) if (ais_results["citation_rec"] + ais_results["citation_prec"]) > 0 else 0
             all_scores["citation_rec_all"] = ais_results["citation_rec_all"]
             all_scores["citation_prec_all"] = ais_results["citation_prec_all"]
             result["cited_paper_numbers"] = ais_results["cited_paper_numbers"]
@@ -753,7 +754,7 @@ def main():
             all_scores["citation_rec_all"] = ais_results["citation_rec_all"]
             all_scores["citation_prec_all"] = ais_results["citation_prec_all"]
 
-        print(result)
+        # print(result)
         with open(file_name + ".score_post_fix", "w") as f:
             json.dump(result, f, indent=4)
 
